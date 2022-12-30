@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    {% for details in watchlisted_items %}
+        <div class="card" style="width: 18rem;">
+            <a href="{% url 'listing' title=details.item_title %}">
+                <img src="{{ details.item_image }}" class="card-img-top" alt="{{ details.item }}">
+                <div class="card-body">
+                <h5 class="card-title">{{ details.item_title }}</h5>
+                <p class="card-text"><strong>Description</strong>: {{ details.item_description }}</p>
+                <p class="card-text"><strong>Price</strong>: {{ details.item_price }} INR</p>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}

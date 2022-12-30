@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<ul class="list-group">
+    {% for choice in choices %}
+        <form action="{% url 'categories' %}" method="post">
+            {% csrf_token %}
+                <input type="submit" name="category" value="{{ choice }}">
+        </form>
+        <br>
+    {% endfor %}
+</ul>
+
+{% endblock %}

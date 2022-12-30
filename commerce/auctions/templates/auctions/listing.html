@@ -1,0 +1,77 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing</h2>
+    {% if details.item_active == 0 and bid.bid == details.item_highbidprice %}
+        <div class="alert alert-primary w-25 p-3" role="alert">
+            Congratulations {{ bid.bidder }}! You won the bid!
+        </div>
+    {% endif %}
+    {% if message %}
+        <div class="alert alert-primary w-25 p-3" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="card" style="width: 18rem;">
+        <img src="{{ details.item_image }}" class="card-img-top" alt="{{ details.item }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ details.item_title }}</h5>
+          <p class="card-text"><strong>Description</strong>: {{ details.item_description }}</p>
+          <p class="card-text"><strong>Initial Price</strong>: {{ details.item_price }} INR</p>
+          <p class="card-text"><strong>Current Highest Bid</strong>: {{ details.item_highbidprice }} INR</p>
+        </div>
+      </div>
+      <br>
+    {% if user.is_authenticated %}
+    <form action="{% url 'watchlist' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="item" value="{{ details.id }}">
+            {% if watchlisted %}
+                <input type="submit" name="watchlistdata" value="Remove from watchlist">
+            {% else %}
+                <input type="submit" name="watchlistdata" value="Add to watchlist">
+            {% endif %}
+            <br>
+            <br>
+        {% endif %}
+    </form>
+    {% if user.is_authenticated and details.item_active == 1 %}
+        <form action="{% url 'bid' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="item" value="{{ details.id }}">
+            <h4>Make a Bid: <input type="number" name="bidvalue" step="0.01"></h4>
+            <h5>Your Current Bid: {{ bid.bid }}</h5>
+            <input type="submit" value="Bid">
+        </form>
+    {% elif details.item_active == 0 %}
+        <h2>This auction is closed.</h2>
+    {% endif %}
+    </form>
+    {% if owner and details.item_active == 1 %}
+      <form action="{% url 'close' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="item" value="{{ details.id }}">
+        <br>
+        <input type="submit" value="Close Auction">
+     </form>
+    {% endif %}
+     <br>
+     <hr>
+     <ul class="list-group">
+        {% for comment in comments %}
+            <li class="list-group-item">{{ comment.comment }}
+                <br>
+            <strong>User</strong>: {{ comment.bidder }}</li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+        <h4>Add Comment:</h4>
+        <form action="{% url 'comment' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="item" value="{{ details.id }}">
+            <input type="text" name="commentvalue">
+            <input type="submit">
+        </form>    
+    {% endif %}
+
+{% endblock %}
