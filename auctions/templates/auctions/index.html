@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Item</th>
+            <th scope="col">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            {% if item.item_active == 1 %}
+              <tr>
+                <th scope="row"><img src="{{ item.item_image }}" class="listing_image" style="max-width: 200px;"></th>
+                  <td>
+                    <a href="{% url 'listing' title=item.item_title %}">
+                          <strong>{{ item.item_title }}</strong><br></a>
+                      Description: {{ item.item_description }}<br>
+                      Initial Price: {{ item.item_price }} INR
+                  </td>
+                </tr>
+              {% endif %}
+            {% empty %}
+          {% endfor %}
+        </tbody>
+      </table>
+
+    
+{% endblock %}
